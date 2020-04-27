@@ -21,12 +21,17 @@ const chatMessageSchema = new mongoose.Schema({
 
     time: {
         type: Date,
-        default: () => new Date().toLocaleString('zh-HK')
+        default: () => new Date()
     }
 }, {toObject: {virtuals: true}, toJSON: {virtuals: true}});
 
 chatMessageSchema.virtual('formatedtime').get(function() {
-    return moment(this.time).format('HH:mm');
+    let displayTime = this.time;
+    if (moment(this.time).utcOffset() == -0){
+        // for server
+        displayTime = moment(this.time).add(8, 'h')
+    }
+    return moment(displayTime).format('HH:mm');
 });
 
 const ChatMessage = mongoose.model('chat-message', chatMessageSchema);
