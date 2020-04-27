@@ -1,0 +1,36 @@
+#user-box {
+    float: left;
+    margin-right: 2%;
+    margin-bottom: 12px;
+    width: 450px !important;
+}
+
+.card-body {
+    display: flex;
+}
+
+#username {
+    margin-bottom: 30px;
+}
+
+#description {
+    white-space: pre-wrap;
+    margin-left: 10px;
+}
+
+#edit-button a{
+    width: 100%;
+    padding-left: 20%;
+    padding-right: 20%;
+    height: 50px;
+    margin-top: 15px;
+    padding-top: 5px;
+    font-size: 1.5em;
+    font-weight: 1000;
+    background-color: rgb(79, 124, 223);
+    color: white;
+}
+
+#edit-button {
+    margin: 0, auto;
+}   

@@ -50,11 +50,12 @@ body {
     border: 1px solid grey;
     overflow: scroll;
     /* background-color: rgba(82, 82, 221, 0.726); */
-    background-image: url('./img/background/1.jpg');
-    background-position: center;
+    background-image: url('./img/background/degea.jpg');
+    background-position: top;
     background-size: cover;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden
 }
 
 .chat-message {
@@ -67,7 +68,7 @@ body {
     margin-bottom: 10px;
     margin-left: 5px; 
     background-color: rgba(178, 229, 245, 0.692);
-    white-space: pre-wrap;
+    white-space: pre-line;
     min-width: 20%;
     max-width: 45%;
 }
@@ -89,6 +90,11 @@ body {
 .chat-message .username {
     color: rgb(88, 39, 167);
     font-weight: 800;
+}
+
+.chat-message .time {
+    display: inline-block;
+    margin-left: 10px;
 }
 
 form > input {
@@ -119,12 +125,13 @@ form > input {
 }
 
 #send {
-    font-size: 1.3em;
-    background-color: rgb(14, 85, 216);
+    font-size: 1em;
+    background-color: rgb(38, 105, 228);
     padding: 10px;
     font-weight: 800;
     border-radius: 5px;
-    width: 10%;
+    width: 15%;
+    min-width: 60px;
     text-align: center;
     color: white;
 }

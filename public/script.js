@@ -53,8 +53,7 @@ function outputMessage(sentMessage) {
     if(sentMessage.userSend.username == 'me') {
         div.classList.add('my-message');
     }
-    div.innerHTML = `<p class="username chat-message-content">${sentMessage.userSend.username}<span> ${sentMessage.formatedtime}</span>
-    </p><p class="chat-message-content">${sentMessage.message}</p>`
+    div.innerHTML = `<p class="username chat-message-content">${sentMessage.userSend.username}<span class="time">${sentMessage.formatedtime}</span></p><p class="chat-message-content">${sentMessage.message}</p>`
     document.querySelector('.chat-messages').appendChild(div);
     
     //scroll down

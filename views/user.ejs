@@ -1,19 +1,51 @@
 <div class="container">
   <% users.forEach(user => { %>   
-      <div class="card" style="width: 18rem;">
+    <% if(user.id == '5ea59e129afb2b00177315c9' && loggedInUser.role == 'ADMIN') { %>   
+        <div class="card" id="user-box" style="width: 18rem;">
+            <div class="card-body">
+              <div class="main">
+                  <h3 class="card-title" id="username"><%= user.username %></h3>
+                  <a type="submit" href="/users/chat/<%= user.id %>/<%= loggedInUser.id %>" class="btn btn-info" id="chat-button">Chat with <%= user.username %></a>
+              </div>
+                  <% if(user.description == null) { %> 
+                      <div id="description"><p class="card-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus reiciendis, optio harum alias deserunt vitae.</p></div>
+                  <% } else { %> 
+                      <div id="description"><p class="card-text"><%= user.description %></p></div>
+                  <% } %> 
+                  
+                  <% if(user.id == loggedInUser.id) { %> 
+                      <a href="/users/<%= user.id %>" class="btn btn-info">Edit</a>
+                  <% } %> 
+              </div>
+  
+        </div>
+        <% continue; %> 
+    <% } else { %> 
+        <% continue; %> 
+    <% } %> 
+    <div class="card" id="user-box" style="width: 18rem;">
           <div class="card-body">
-            <h5 class="card-title"><%= user.username %></h5>
-            <% if(user.description == null) { %> 
-                <p class="card-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus reiciendis, optio harum alias deserunt vitae.</p>
-            <% } else { %> 
-                <p class="card-text"><%= user.description %></p>
-            <% } %> 
-            <a type="submit" href="/users/chat/<%= user.id %>/<%= loggedInUser.id %>" class="btn btn-info">Chat with <%= user.username %></a>
-            <% if(user.id == loggedInUser.id) { %> 
-                <a href="/users/<%= user.id %>" class="btn btn-info">Edit</a>
-            <% } %> 
-          </div>
+            <div class="main">
+                <h3 class="card-title" id="username"><%= user.username %></h3>
+                <a type="submit" href="/users/chat/<%= user.id %>/<%= loggedInUser.id %>" class="btn btn-info" id="chat-button">Chat with <%= user.username %></a>
+            </div>
+                <% if(user.description == null) { %> 
+                    <div id="description"><p class="card-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus reiciendis, optio harum alias deserunt vitae.</p></div>
+                <% } else { %> 
+                    <div id="description"><p class="card-text"><%= user.description %></p></div>
+                <% } %> 
+                
+                <% if(user.id == loggedInUser.id) { %> 
+                    <a href="/users/<%= user.id %>" class="btn btn-info">Edit</a>
+                <% } %> 
+            </div>
+
       </div>
   <% }) %> 
   
+  <div id="edit-button">
+    <a href="/users/<%= loggedInUser.id %>" class="btn btn-alert mt-10">Edit My Profile</a>
+  </div>
 </div>
+
+

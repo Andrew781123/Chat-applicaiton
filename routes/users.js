@@ -8,6 +8,10 @@ router.get('/', checkAuthenticated, getUsers, async (req, res) => {
     });
 });
 
+router.get('/:id', (req, res) => {
+    res.render('form');
+});
+
 router.put('/:id', async (req, res) => {
     const user = await User.findById(req.params.id);
     user.username = req.body.username;

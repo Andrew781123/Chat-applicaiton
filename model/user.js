@@ -16,7 +16,11 @@ const userSchema = new mongoose.Schema({
     isFirst: {
         type: Boolean,
         default: true
-    }
+    },
+
+    role: {
+        type: String,
+    } 
 });
 
 const User = mongoose.model('user', userSchema);
