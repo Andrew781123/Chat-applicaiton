@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="/chat.css">
+    <script src="https://kit.fontawesome.com/f52f280db8.js" crossorigin="anonymous"></script>
+    <title>Chat application</title>
+</head>
+<body>
+    <section class="chat-room">
+        <div class="chat-room-title">
+            <i class="fas fa-comment-dots"></i>
+            <span>Chatting With <span id="user"></span></span>
+        </div>
+        <div class="chat-box">
+            <form id="chat-form" action="#" method="">
+                <div class="chat-messages">
+                    
+                </div>
+                <div class="message-input">
+                    <input id="message" type="text" placeholder="Enter message" required>
+                    <button type="submit" id="send">Send</button>
+                </div>
+            </form>
+        </div>
+        <a href="/users" class="button">Back</a>
+    </section>
+    <a href="/users/chat/delete" class="btn btn-danger">Delete all chats</a>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.3/qs.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/script.js"></script>
+</body>
+</html>

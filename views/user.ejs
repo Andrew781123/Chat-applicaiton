@@ -1,0 +1,19 @@
+<div class="container">
+  <% users.forEach(user => { %>   
+      <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title"><%= user.username %></h5>
+            <% if(user.description == null) { %> 
+                <p class="card-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus reiciendis, optio harum alias deserunt vitae.</p>
+            <% } else { %> 
+                <p class="card-text"><%= user.description %></p>
+            <% } %> 
+            <a type="submit" href="/users/chat/<%= user.id %>/<%= loggedInUser.id %>" class="btn btn-info">Chat with <%= user.username %></a>
+            <% if(user.id == loggedInUser.id) { %> 
+                <a href="/users/<%= user.id %>" class="btn btn-info">Edit</a>
+            <% } %> 
+          </div>
+      </div>
+  <% }) %> 
+  
+</div>
