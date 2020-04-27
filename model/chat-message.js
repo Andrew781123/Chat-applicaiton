@@ -26,7 +26,7 @@ const chatMessageSchema = new mongoose.Schema({
 }, {toObject: {virtuals: true}, toJSON: {virtuals: true}});
 
 chatMessageSchema.virtual('formatedtime').get(function() {
-    return moment(this.time).format('HH:mm');
+    return moment(this.time).format('HH:mm:ss');
 });
 
 const ChatMessage = mongoose.model('chat-message', chatMessageSchema);
