@@ -6,6 +6,8 @@ const User = require('../model/user');
 let userId;
 let currentUserId;
 
+let currentUserSocketId;
+
 let users = [];
 
 
@@ -15,7 +17,7 @@ function configSocketio(server) {
 
     io.on('connection', socket => {
         console.log('new connection');
-
+        currentUserSocketId = socket.id
         //request id from url
         socket.emit('requestid', 'You joined the chatroom');
 
@@ -31,8 +33,11 @@ function configSocketio(server) {
             const currentUser = await User.findById(currentUserId);
             const user = await User.findById(userId);
 
-            socket.emit('user', user);
-            users[currentUser.username] = socket.id;
+            socket.emit('user', {
+                sender: currentUser,
+                receiver: user
+            });
+            users[currentUser.username] = currentUserSocketId;
 
             //get chat history from database
             const chatHistories = await ChatMessage.find(
@@ -60,6 +65,7 @@ function configSocketio(server) {
 
         //listen for message sent
         socket.on('sentMessage', async (sentMessage) => {
+            console.log(`newMessage: ${sentMessage}`);
             const newMessage = await saveMessage(sentMessage);
             //get virtual
             const formatedtime = newMessage.formatedtime
@@ -102,12 +108,13 @@ function getIdsFromUrl(url) {
 
 async function saveMessage(message) {
     const message2 = await ChatMessage.create({
-        userSend: currentUserId,
-        userReceive: userId,
-        message: message
+        userSend: message.senderId,
+        userReceive: message.receiverId,
+        message: message.message
     });
-
-    const newMessage = ChatMessage.populate(message2, {path: 'userSend userReceive'})
+    console.log(`before: ${message2}`);
+    const newMessage = await ChatMessage.populate(message2, {path: 'userSend userReceive'});
+    console.log(`populated: ${newMessage}`);
     return newMessage;
 }
 
