@@ -6,6 +6,9 @@ const User = require('../model/user');
 let userId;
 let currentUserId;
 
+let users = [];
+
+
 function configSocketio(server) {
     const io = socketio(server);
     const formatMessage = require('../utills/format-messages.js');
@@ -24,9 +27,9 @@ function configSocketio(server) {
             const ids = getIdsFromUrl(url);
             userId = ids.userId;
             currentUserId = ids.currentUserId;
-            
-            const user = await User.findById(userId);
-            socket.emit('user', user);
+
+            const currentUser = await User.findById(currentUserId);
+            users[currentUser.username] = socket.id;
 
             //get chat history from database
             const chatHistories = await ChatMessage.find(
@@ -53,7 +56,8 @@ function configSocketio(server) {
         });
 
         //listen for message sent
-        socket.on('sentMessage', async sentMessage => {
+        socket.on('sentMessage', async (sentMessage) => {
+            console.log(from);
             const newMessage = await saveMessage(sentMessage);
             //get virtual
             const formatedtime = newMessage.formatedtime
@@ -65,11 +69,13 @@ function configSocketio(server) {
                 formatedtime: formatedtime,
                 message: newMessage.message
             };
+            const receiver = await User.findById(userId);
+            const receiverId = users[receiver];
             
             //emit to sender
             socket.emit('myMessage', myMessage);
             
-            socket.broadcast.emit('sentMessage', newMessage);
+            socket.to(receiverId).emit('sentMessage', newMessage);
         });
 
         //emit when client disconnects

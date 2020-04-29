@@ -18,7 +18,6 @@ socket.on('user', user => {
 
 //get formatedMessages from database
 socket.on('chatHistory', chatHistories => {
-    console.log(chatHistories);
     //output array of messages
     chatHistories.forEach(chatHistory => {
         outputMessage(chatHistory);
