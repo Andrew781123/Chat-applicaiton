@@ -65,7 +65,7 @@ function configSocketio(server) {
 
         //listen for message sent
         socket.on('sentMessage', async (sentMessage) => {
-            console.log(`newMessage: ${sentMessage}`);
+            // console.log(`newMessage: ${sentMessage}`);
             const newMessage = await saveMessage(sentMessage);
             //get virtual
             const formatedtime = newMessage.formatedtime
@@ -112,9 +112,9 @@ async function saveMessage(message) {
         userReceive: message.receiverId,
         message: message.message
     });
-    console.log(`before: ${message2}`);
+    // console.log(`before: ${message2}`);
     const newMessage = await ChatMessage.populate(message2, {path: 'userSend userReceive'});
-    console.log(`populated: ${newMessage}`);
+    // console.log(`populated: ${newMessage}`);
     return newMessage;
 }
 
