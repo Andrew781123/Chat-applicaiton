@@ -77,8 +77,7 @@ function configSocketio(server) {
                 formatedtime: formatedtime,
                 message: newMessage.message
             };
-            const receiver = await User.findById(userId);
-            const receiverId = users[receiver.username];
+            const receiverId = users[sentMessage.receiverName];
             
             //emit to sender
             socket.emit('myMessage', myMessage);

@@ -8,7 +8,9 @@ const chatBox = document.querySelector('.chat-messages');
 const username = document.querySelector('#username');
 
 let senderId;
+let senderName;
 let receiverId;
+let receiverName;
 
 socket.on('requestid', message => {
     socket.emit('userids', location.pathname);
@@ -17,6 +19,8 @@ socket.on('requestid', message => {
 socket.on('user', user => {
     senderId = user.sender._id;
     receiverId = user.receiver._id;
+    senderName = user.sender.username;
+    receiverName = user.receiver.username;
     // console.log(`sender: ${typeof senderId}, receiver: ${receiverId}`);
     document.querySelector('#user').textContent = user.receiver.username
 });
@@ -47,7 +51,9 @@ chatForm.addEventListener('submit', e => {
     const sentMessage = {
         message: messageInput,
         senderId: senderId,
-        receiverId: receiverId
+        senderName: senderName,
+        receiverId: receiverId,
+        receiverName: receiverName
     };
     // sentMessage.message = messageInput;
     // sentMessage.senderId = senderId;
