@@ -57,7 +57,6 @@ function configSocketio(server) {
 
         //listen for message sent
         socket.on('sentMessage', async (sentMessage) => {
-            console.log(from);
             const newMessage = await saveMessage(sentMessage);
             //get virtual
             const formatedtime = newMessage.formatedtime
