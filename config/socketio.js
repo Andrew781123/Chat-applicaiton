@@ -29,6 +29,9 @@ function configSocketio(server) {
             currentUserId = ids.currentUserId;
 
             const currentUser = await User.findById(currentUserId);
+            const user = await User.findById(userId);
+
+            socket.emit('user', user);
             users[currentUser.username] = socket.id;
 
             //get chat history from database
