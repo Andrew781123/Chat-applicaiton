@@ -18,9 +18,10 @@ socket.emit('userids', location.pathname);
 socket.on('chatInfo', user => {
     senderId = user.sender._id;
     senderName = user.sender.username;
+    receiverName = user.receiver,
     room = user.room;
     // console.log(`sender: ${typeof senderId}, receiver: ${receiverId}`);
-    document.querySelector('#user').textContent = user.receiver.username
+    document.querySelector('#user').textContent = user.receiverName;
 });
 
 //get formatedMessages from database

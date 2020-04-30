@@ -21,6 +21,7 @@ function configSocketio(server) {
             currentUserId = ids.currentUserId;
 
             const currentUser = await User.findById(currentUserId);
+            const user = await User.findById(userId);
 
             //check if room exists
             const room = await chatRoom.findOne({users: {$all: [currentUserId, userId]}});
@@ -34,6 +35,7 @@ function configSocketio(server) {
             //provide chat info to client
             socket.emit('chatInfo', {
                 sender: currentUser,
+                receiver: user.username,
                 room: room
             });
 
