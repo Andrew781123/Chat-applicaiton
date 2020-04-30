@@ -7,58 +7,39 @@ const chatRoom = require('../model/room');
 let userId;
 let currentUserId;
 
-let currentUserSocketId;
-
-let users = [];
-
-let room;
-
-
 function configSocketio(server) {
     const io = socketio(server);
-    const formatMessage = require('../utills/format-messages.js');
 
     io.on('connection', socket => {
         console.log('new connection');
-        currentUserSocketId = socket.id
         //request id from url
         
-
-        //Welcome message for other users
-        socket.broadcast.emit('message', 'A user has joined the chatroom');
-
-        //response url from client
+         //response url from client
         socket.on('userids', async url => {
             const ids = getIdsFromUrl(url);
             userId = ids.userId;
             currentUserId = ids.currentUserId;
 
             const currentUser = await User.findById(currentUserId);
-            const user = await User.findById(userId);
 
             //check if room exists
-            room = await chatRoom.findOne({users: {$all: [currentUserId, userId]}});
-            console.log(`room found: ${room}`);
+            const room = await chatRoom.findOne({users: {$all: [currentUserId, userId]}});
             if(room == null) {
                 room = createNewRoom(roomName = '', currentUserId, userId);
             }
 
-
             //join room
             socket.join(room._id);
             
-            //provide user info to client
-            socket.emit('user', {
+            //provide chat info to client
+            socket.emit('chatInfo', {
                 sender: currentUser,
-                receiver: user,
                 room: room
             });
-            // users[currentUser.username] = currentUserSocketId;
 
             //get chat history from database
             const chatHistories = await ChatMessage.find({room: room._id}).populate('userSend').exec();
-            console.log(`chatHistories.length = ${chatHistories.length}`);
-            //format messages
+            //loop through only if there is chat history
             if(chatHistories.length > 0) {
                 chatHistories.forEach(chatHistory => {
                     if(chatHistory.userSend.id == currentUserId) {
@@ -72,7 +53,6 @@ function configSocketio(server) {
 
         //listen for message sent
         socket.on('sentMessage', async (sentMessage) => {
-            // console.log(`newMessage: ${sentMessage}`);
             const newMessage = await saveMessage(sentMessage);
             //get virtual
             const formatedtime = newMessage.formatedtime
@@ -84,10 +64,10 @@ function configSocketio(server) {
                 formatedtime: formatedtime,
                 message: newMessage.message
             };
-            // const receiverId = users[sentMessage.receiverName];
             
             //emit to sender
             socket.emit('myMessage', myMessage);
+            //emit to clients in room
             socket.broadcast.to(sentMessage.room._id).emit('sentMessage', newMessage);
         });
 
@@ -132,16 +112,13 @@ async function createNewRoom(roomName = '', currentUserId, userId) {
 }
 
 async function saveMessage(message) {
-    console.log(message);
     const message2 = await ChatMessage.create({
         userSend: message.senderId,
         room: message.room._id,
         message: message.message
     });
-    // console.log(`before: ${message2}`);
-    const newMessage = await ChatMessage.populate(message2, {path: 'userSend'});
-    // console.log(`populated: ${newMessage}`);
-    return newMessage;
+    const savedMessage = await ChatMessage.populate(message2, {path: 'userSend'});
+    return savedMessage;
 }
 
 

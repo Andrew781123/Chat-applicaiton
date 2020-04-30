@@ -9,19 +9,15 @@ const username = document.querySelector('#username');
 
 let senderId;
 let senderName;
-let receiverId;
-let receiverName;
 let room;
 
 
 socket.emit('userids', location.pathname);
 
 
-socket.on('user', user => {
+socket.on('chatInfo', user => {
     senderId = user.sender._id;
-    receiverId = user.receiver._id;
     senderName = user.sender.username;
-    receiverName = user.receiver.username;
     room = user.room;
     // console.log(`sender: ${typeof senderId}, receiver: ${receiverId}`);
     document.querySelector('#user').textContent = user.receiver.username
@@ -54,15 +50,9 @@ chatForm.addEventListener('submit', e => {
         message: messageInput,
         senderId: senderId,
         senderName: senderName,
-        receiverId: receiverId,
-        receiverName: receiverName,
         room: room
     };
-    // sentMessage.message = messageInput;
-    // sentMessage.senderId = senderId;
-    // sentMessage.receiverId = receiverId;
-    // console.log(`client sentMessage: ${sentMessage}`);
-    //sent message to server
+    
     socket.emit('sentMessage', sentMessage);
     //clear message
     e.target.elements.message.value = '';
@@ -70,7 +60,6 @@ chatForm.addEventListener('submit', e => {
 });
 
 function outputMessage(sentMessage) {
-    // console.log(sentMessage);
     const div = document.createElement('div');
     div.classList.add('chat-message');
     if(sentMessage.userSend.username == 'me') {
