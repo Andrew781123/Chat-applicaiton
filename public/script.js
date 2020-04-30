@@ -21,7 +21,7 @@ socket.on('chatInfo', user => {
     receiverName = user.receiver,
     room = user.room;
     // console.log(`sender: ${typeof senderId}, receiver: ${receiverId}`);
-    document.querySelector('#user').textContent = user.receiverName;
+    document.querySelector('#user').textContent = receiverName;
 });
 
 //get formatedMessages from database
