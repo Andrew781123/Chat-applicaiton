@@ -1,54 +1,30 @@
 <div class="container">
-  <% for(let i = 0; i < users.length; i++) { %>   
-    <% if(users[i].id == '5ea59e129afb2b00177315c9') { %>   
-        <% if(loggedInUser.role == 'ADMIN') { %> 
-            <div class="card" id="user-box" style="width: 18rem;">
-                <div class="card-body">
-                <div class="main">
-                    <h3 class="card-title" id="username"><%= users[i].username %></h3>
-                    <a type="submit" href="/users/chat/<%= users[i].id %>/<%= loggedInUser.id %>" class="btn btn-info" id="chat-button">Chat with <%= users[i].username %></a>
-                </div>
-                    <% if(users[i].description == null) { %> 
-                        <div id="description"><p class="card-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus reiciendis, optio harum alias deserunt vitae.</p></div>
-                    <% } else { %> 
-                        <div id="description"><p class="card-text"><%= users[i].description %></p></div>
-                    <% } %> 
-                    
-                    <% if(users[i].id == loggedInUser.id) { %> 
-                        <a href="/users/<%= users[i].id %>" class="btn btn-info">Edit</a>
-                    <% } %> 
-                </div>
-    
-            </div>
-            <% continue; %> 
-        <% } else { %> 
-            <% continue; %> 
-        <% } %> 
-        
-    <% } %> 
     <div class="card" id="user-box" style="width: 18rem;">
-          <div class="card-body">
+        <div class="card-body">
             <div class="main">
-                <h3 class="card-title" id="username"><%= users[i].username %></h3>
-                <a type="submit" href="/users/chat/<%= users[i].id %>/<%= loggedInUser.id %>" class="btn btn-info" id="chat-button">Chat with <%= users[i].username %></a>
-            </div>
-                <% if(users[i].description == null) { %> 
-                    <div id="description"><p class="card-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus reiciendis, optio harum alias deserunt vitae.</p></div>
-                <% } else { %> 
-                    <div id="description"><p class="card-text"><%= users[i].description %></p></div>
-                <% } %> 
+                <h3 class="card-title" id="username"><%= loggedInUser.username %></h3>
                 
-                <% if(users[i].id == loggedInUser.id) { %> 
-                    <a href="/users/<%= users[i].id %>" class="btn btn-info">Edit</a>
-                <% } %> 
             </div>
-
-      </div>
-  <% } %> 
-  
-  <div id="edit-button">
-    <a href="/users/<%= loggedInUser.id %>" class="btn btn-alert mt-10">Edit My Profile</a>
-  </div>
+            <div id="description"><p class="card-text"><%= loggedInUser.description %></p></div>
+        </div>
+        <div id="edit-button">
+            <a href="/users/<%= loggedInUser.id %>" class="btn btn-alert mt-10">Edit My Profile</a>
+          </div>
+    </div>
+    <% users.forEach(user => { %> 
+        <div class="card" id="user-box" style="width: 18rem;">
+            <div class="card-body">
+                <div class="main">
+                    <h3 class="card-title" id="username"><%= user.username %></h3>
+                    <a type="submit" href="/users/chat/<%= user.id %>/<%= loggedInUser.id %>" class="btn btn-info" id="chat-button">Chat with <%= user.username %></a>
+                </div>
+                <div id="description"><p class="card-text"><%= user.description %></p></div>
+            </div>
+    
+        </div>
+    <% }) %> 
+    
 </div>
+
 
 
