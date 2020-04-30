@@ -10,9 +10,28 @@ body {
     font-family: 'Comic Neue', cursive;
 }
 
+.chat-room-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #user {
     font-weight: 1000;
     color: rgb(247, 247, 247);
+    margin-left: 10px;
+}
+
+
+#status {
+    margin-left: 10px;
+    font-size: .8em;
+    color: rgb(54, 54, 54);
+    display: none;
+}
+
+#status.show {
+    display: inline-block;
 }
 
 .chat-room {

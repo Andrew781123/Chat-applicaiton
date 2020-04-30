@@ -4,13 +4,15 @@ const ChatMessage = require('../model/chat-message');
 const User = require('../model/user');
 const chatRoom = require('../model/room');
 
-let userId;
-let currentUserId;
 
 function configSocketio(server) {
     const io = socketio(server);
 
     io.on('connection', socket => {
+        let userId;
+        let currentUserId;
+        let room;
+
         console.log('new connection');
         //request id from url
         
@@ -24,7 +26,9 @@ function configSocketio(server) {
             const user = await User.findById(userId).select('username').exec();
 
             //check if room exists
-            let room = await chatRoom.findOne({users: {$all: [currentUserId, userId]}});
+            room = await chatRoom.findOne({
+                users: {$all: [currentUserId, userId]}
+            });
             if(room == null) {
                 room = await createNewRoom(roomName = '', currentUserId, userId);
             }
@@ -32,6 +36,8 @@ function configSocketio(server) {
 
             //join room
             socket.join(room._id);
+
+            socket.broadcast.to(room._id).emit('show-online');
             
             //provide chat info to client
             socket.emit('chatInfo', {
@@ -84,9 +90,9 @@ function configSocketio(server) {
         });
 
         //emit when client disconnects
-        socket.on('disconnect', () => {
-            io.emit('message', 'A user has left the chat');
-        });
+        // socket.on('disconnect', () => {
+        //     socket.broadcast.to(room._id).emit('show-offline');
+        // });
     });
 }
 

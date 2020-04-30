@@ -7,6 +7,7 @@ const chatForm = document.querySelector('#chat-form');
 const chatBox = document.querySelector('.chat-messages');
 const username = document.querySelector('#username');
 const typing = document.querySelector('#typing');
+const status = document.querySelector('#status');
 
 let senderId;
 let senderName;
@@ -15,6 +16,9 @@ let room;
 
 socket.emit('userids', location.pathname);
 
+// socket.on('show-online', () => {
+//     status.classList.add('show');
+// });
 
 socket.on('chatInfo', user => {
     senderId = user.sender._id;
@@ -45,6 +49,10 @@ socket.on('myMessage', myMessage => {
 socket.on('remove-typing', () => {
     typing.classList.remove('show');
 });   
+
+socket.on('show-offline', () => {
+    status.textContent = 'Offline';
+});
 
 //Sent message
 chatForm.addEventListener('submit', e => {
