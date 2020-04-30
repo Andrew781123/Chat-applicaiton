@@ -24,7 +24,7 @@ function configSocketio(server) {
             const user = await User.findById(userId).select('username').exec();
 
             //check if room exists
-            const room = await chatRoom.findOne({users: {$all: [currentUserId, userId]}});
+            let room = await chatRoom.findOne({users: {$all: [currentUserId, userId]}});
             if(room == null) {
                 room = createNewRoom(roomName = '', currentUserId, userId);
             }
@@ -75,7 +75,6 @@ function configSocketio(server) {
 
         //typing
         socket.on('typing', ({ senderName, room }) => {
-            console.log('typing');
             socket.broadcast.to(room._id).emit('show-typing', senderName);
         });
 

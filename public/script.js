@@ -71,7 +71,6 @@ chatForm.addEventListener('submit', e => {
 
 //typing
 document.querySelector('#message').addEventListener('input', () => {
-    console.log('typing');
     socket.emit('typing', {
         senderName: senderName,
         room: room
@@ -79,7 +78,6 @@ document.querySelector('#message').addEventListener('input', () => {
 });
 
 socket.on('show-typing', senderName => {
-    console.log('show typing');
     typing.textContent = `${senderName} is typing`;
     typing.classList.add('show');
 });
