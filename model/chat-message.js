@@ -8,9 +8,9 @@ const chatMessageSchema = new mongoose.Schema({
         required: true
     },
 
-    userReceive: {
+    room: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'chat-room',
         required: true
     },
 

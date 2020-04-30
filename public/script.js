@@ -11,16 +11,18 @@ let senderId;
 let senderName;
 let receiverId;
 let receiverName;
+let room;
 
-socket.on('requestid', message => {
-    socket.emit('userids', location.pathname);
-});
+
+socket.emit('userids', location.pathname);
+
 
 socket.on('user', user => {
     senderId = user.sender._id;
     receiverId = user.receiver._id;
     senderName = user.sender.username;
     receiverName = user.receiver.username;
+    room = user.room;
     // console.log(`sender: ${typeof senderId}, receiver: ${receiverId}`);
     document.querySelector('#user').textContent = user.receiver.username
 });
@@ -53,7 +55,8 @@ chatForm.addEventListener('submit', e => {
         senderId: senderId,
         senderName: senderName,
         receiverId: receiverId,
-        receiverName: receiverName
+        receiverName: receiverName,
+        room: room
     };
     // sentMessage.message = messageInput;
     // sentMessage.senderId = senderId;
