@@ -8,17 +8,32 @@ router.get('/', checkAuthenticated, getUsers, async (req, res) => {
     });
 });
 
-router.get('/:id', (req, res) => {
-    res.render('form');
+router.get('/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('username description').exec();
+        const {username, description} = user;
+        res.render('form', {
+            username: username,
+            description: description
+        });
+    } catch(err) {
+        console.log(err);
+        res.redirect('/');
+    }
 });
 
 router.put('/:id', async (req, res) => {
-    const user = await User.findById(req.params.id);
-    user.username = req.body.username;
-    user.description= req.body.description;
+    try {
+        const user = await User.findById(req.params.id);
+        user.username = req.body.username;
+        user.description= req.body.description;
 
-    await user.save();
-    res.redirect('/');
+        await user.save();
+        res.redirect('/users');
+    } catch {
+        res.redirect('/');
+    }
+    
 });
 
 router.get('/chat/:id/:currentUserid', checkAuthenticated, getUserid, (req, res) => {

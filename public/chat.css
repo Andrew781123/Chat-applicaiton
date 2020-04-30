@@ -16,7 +16,7 @@ body {
 }
 
 .chat-room {
-    width: 80%;
+    width: 95%;
     max-width: 900px;
     display: flex;
     flex-direction: column;
