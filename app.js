@@ -53,9 +53,10 @@ app.use((req, res, next) => {
 
 const authRouter = require('./routes/auth');
 const profileRouter = require('./routes/users');
+const adminRouter = require('./routes/admin');
 app.use('/auth', authRouter);
 app.use('/users', profileRouter);
-
+app.use('/admin', adminRouter);
 
 
 app.get('/', (req, res) => {

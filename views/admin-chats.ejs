@@ -1,0 +1,13 @@
+<% chatMessages.forEach(chatMessage => { %> 
+    <div id="admin-chats-container">
+        <div id="admin-chats">
+            <div id="admin-chats-header">
+              <span class="user" id="sender"><%= chatMessage.userSend.username %></span><span id="to">to</span><span id="receiver" class="user"><%= chatMessage.userReceive.username %></span><span id="time"><%= chatMessage.time %></span>
+              <a href="/admin/chats/delete"></a>
+            </div>
+            <div id="admin-chats-message">
+                <p  id="message"><%= chatMessage.message %></p>
+            </div>
+          </div>
+    </div>
+<% }) %> 

@@ -1,0 +1,43 @@
+#admin-chats-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+#admin-chats-container #admin-chats {
+    border: 3px grey solid;
+    width: 100%;
+    padding: 10px;
+}
+
+#admin-chats-header {
+    border-bottom: 2px grey solid;
+}
+
+#admin-chats-header .user {
+    font-size: 1.7em;
+    font-weight: 800;
+}
+
+#admin-chats-header #sender {
+    color: rgb(151, 66, 231);
+}
+
+#admin-chats-header #receiver {
+    color: rgb(33, 90, 33);
+}
+
+#admin-chats-header #to {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#admin-chats-header #time {
+    margin-left: 10px;
+    color: rgb(78, 78, 78);
+}
+
+#admin-chats-message {
+    margin-top: 5px;
+}

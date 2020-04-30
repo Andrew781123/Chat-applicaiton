@@ -43,6 +43,7 @@ function configSocketio(server) {
             socket.emit('chatInfo', {
                 sender: currentUser,
                 receiver: user.username,
+                receiverId: userId,
                 room: room
             });
 
@@ -133,6 +134,7 @@ async function createNewRoom(roomName = '', currentUserId, userId) {
 async function saveMessage(message) {
     const message2 = await ChatMessage.create({
         userSend: message.senderId,
+        userReceive: message.receiverId,
         room: message.room._id,
         message: message.message
     });

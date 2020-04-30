@@ -10,6 +10,7 @@ const typing = document.querySelector('#typing');
 const status = document.querySelector('#status');
 
 let senderId;
+let receiverId;
 let senderName;
 let room;
 
@@ -23,6 +24,7 @@ socket.emit('userids', location.pathname);
 socket.on('chatInfo', user => {
     senderId = user.sender._id;
     senderName = user.sender.username;
+    receiverId = user.receiverId,
     receiverName = user.receiver,
     room = user.room;
     // console.log(`sender: ${typeof senderId}, receiver: ${receiverId}`);
@@ -68,6 +70,7 @@ chatForm.addEventListener('submit', e => {
         message: messageInput,
         senderId: senderId,
         senderName: senderName,
+        receiverId: receiverId,
         room: room
     };
 
