@@ -50,8 +50,8 @@ body {
     height: 600px;
     border: 1px solid grey;
     overflow: scroll;
-    background-image: url('./img/background/degea.jpg');
-    background-position: top;
+    background-image: url('./img/background/popstory.jpg');
+    background-position: center;
     background-size: cover;
     display: flex;
     flex-direction: column;
