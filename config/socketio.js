@@ -37,7 +37,7 @@ function configSocketio(server) {
             const user = await User.findById(userId);
 
             //check if room exists
-            room = await chatRoom.findOne({users: {$in: [currentUserId, userId]}});
+            room = await chatRoom.findOne({users: {$all: [currentUserId, userId]}});
             console.log(`room found: ${room}`);
             if(room == null) {
                 room = createNewRoom(roomName = '', currentUserId, userId);
