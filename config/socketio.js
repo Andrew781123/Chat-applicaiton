@@ -94,7 +94,7 @@ function getIdsFromUrl(url) {
 
 async function createNewRoom(roomName = '', currentUserId, userId) {
     console.log('creating room');
-    //determine group room 
+    //determine group room (if userId is an array, it is group room)
     if(typeof userId == 'string') {
         try {
             const newRoom = await chatRoom.create({
