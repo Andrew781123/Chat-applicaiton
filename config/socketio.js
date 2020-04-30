@@ -26,8 +26,9 @@ function configSocketio(server) {
             //check if room exists
             let room = await chatRoom.findOne({users: {$all: [currentUserId, userId]}});
             if(room == null) {
-                room = createNewRoom(roomName = '', currentUserId, userId);
+                room = await createNewRoom(roomName = '', currentUserId, userId);
             }
+
 
             //join room
             socket.join(room._id);
@@ -42,9 +43,9 @@ function configSocketio(server) {
             //get chat history from database
             const chatHistories = await ChatMessage.find({room: room._id}).populate('userSend').exec();
             //loop through only if there is chat history
-            if(chatHistories.length > 0) {
+            if(chatHistories.length > 0 && chatHistories != null) {
                 chatHistories.forEach(chatHistory => {
-                    if(chatHistory.userSend.id == currentUserId) {
+                    if(chatHistory.userSend._id == currentUserId) {
                         chatHistory.userSend.username = 'me'
                     } 
                 });
@@ -102,18 +103,19 @@ function getIdsFromUrl(url) {
 }
 
 async function createNewRoom(roomName = '', currentUserId, userId) {
-    console.log('creating room');
     //determine group room (if userId is an array, it is group room)
     if(typeof userId == 'string') {
+        const newRoom = new chatRoom({
+            name: roomName,
+            isGroup: false,
+            users: [currentUserId, userId]
+        });
         try {
-            const newRoom = await chatRoom.create({
-                name: roomName,
-                isGroup: false,
-                users: [currentUserId, userId]
-            });
-            return newRoom;
+            const savedRoom = await newRoom.save();
+            return savedRoom;
             
         } catch(err) {
+            console.log('err here');
             return console.error(err);
         }
         

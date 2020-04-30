@@ -62,6 +62,8 @@ chatForm.addEventListener('submit', e => {
         senderName: senderName,
         room: room
     };
+
+    console.log(`room is : ${room}`);
     
     socket.emit('sentMessage', sentMessage);
     //clear message
