@@ -55,7 +55,7 @@ function checkAuthenticated(req, res, next) {
 async function getUsers(req, res, next) {
     try {
         const users = await User.find({_id: {$ne: req.user.id}});
-        res.users = users
+        res.users = users;
         next();
     } catch(err) {
         console.log(err);
