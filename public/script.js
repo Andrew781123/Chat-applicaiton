@@ -6,6 +6,7 @@ const { userid } = Qs.parse(location.search, {
 const chatForm = document.querySelector('#chat-form');
 const chatBox = document.querySelector('.chat-messages');
 const username = document.querySelector('#username');
+const typing = document.querySelector('#typing');
 
 let senderId;
 let senderName;
@@ -40,10 +41,18 @@ socket.on('myMessage', myMessage => {
     outputMessage(myMessage);
 });
 
+//remove-typing
+socket.on('remove-typing', () => {
+    typing.classList.remove('show');
+});   
+
 //Sent message
 chatForm.addEventListener('submit', e => {
     
     e.preventDefault();
+    //no typing
+    socket.emit('remove-typing', room);
+    
     //Get message input form form
     const messageInput = e.target.elements.message.value;
 
@@ -58,6 +67,21 @@ chatForm.addEventListener('submit', e => {
     //clear message
     e.target.elements.message.value = '';
     e.target.elements.message.focus();
+});
+
+//typing
+document.querySelector('#message').addEventListener('input', () => {
+    console.log('typing');
+    socket.emit('typing', {
+        senderName: senderName,
+        room: room
+    });
+});
+
+socket.on('show-typing', senderName => {
+    console.log('show typing');
+    typing.textContent = `${senderName} is typing`;
+    typing.classList.add('show');
 });
 
 function outputMessage(sentMessage) {

@@ -12,7 +12,7 @@ body {
 
 #user {
     font-weight: 1000;
-    color: rgb(63, 18, 223);
+    color: rgb(247, 247, 247);
 }
 
 .chat-room {
@@ -29,12 +29,13 @@ body {
 
 .chat-room-title {
     font-size: 1.5em;
-    background-color: rgba(82, 82, 221, 0.726);
+    background-color: rgb(110, 110, 255);
     padding: 10px;
 }
 
 .chat-box form {
     display: flex;
+    position: relative;
     flex-direction: column;
 }
 
@@ -49,14 +50,14 @@ body {
     height: 600px;
     border: 1px solid grey;
     overflow: scroll;
-    /* background-color: rgba(82, 82, 221, 0.726); */
-    background-image: url('./img/background/degea.jpg');
+    background-image: url('./img/background/1.jpg');
     background-position: top;
     background-size: cover;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden
+    overflow-x: hidden;
 }
+
 
 .chat-message {
     text-align: left;
@@ -72,6 +73,7 @@ body {
     min-width: 20%;
     max-width: 45%;
 }
+
 
 .chat-message.my-message {
     text-align: left;
@@ -95,6 +97,24 @@ body {
 .chat-message .time {
     display: inline-block;
     margin-left: 10px;
+}
+
+#typing {
+    position: absolute;
+    background-color: rgb(110, 110, 255);
+    padding: .4em;
+    font-size: 1.2em;
+    width: 100%;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform 0.5s;
+    z-index: -1;
+}
+
+#typing.show {
+    transform: translateY(0%);
+    opacity: 100;
+    z-index: 10;
 }
 
 form > input {

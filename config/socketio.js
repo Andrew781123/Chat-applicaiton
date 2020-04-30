@@ -20,8 +20,8 @@ function configSocketio(server) {
             userId = ids.userId;
             currentUserId = ids.currentUserId;
 
-            const currentUser = await User.findById(currentUserId);
-            const user = await User.findById(userId);
+            const currentUser = await User.findById(currentUserId).select('username').exec();
+            const user = await User.findById(userId).select('username').exec();
 
             //check if room exists
             const room = await chatRoom.findOne({users: {$all: [currentUserId, userId]}});
@@ -71,6 +71,16 @@ function configSocketio(server) {
             socket.emit('myMessage', myMessage);
             //emit to clients in room
             socket.broadcast.to(sentMessage.room._id).emit('sentMessage', newMessage);
+        });
+
+        //typing
+        socket.on('typing', ({ senderName, room }) => {
+            console.log('typing');
+            socket.broadcast.to(room._id).emit('show-typing', senderName);
+        });
+
+        socket.on('remove-typing', room => {
+            socket.broadcast.to(room._id).emit('remove-typing');
         });
 
         //emit when client disconnects
