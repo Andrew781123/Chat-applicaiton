@@ -37,7 +37,7 @@ function configSocketio(server) {
             //join room
             socket.join(room._id);
 
-            socket.broadcast.to(room._id).emit('show-online');
+            // socket.broadcast.to(room._id).emit('show-online');
             
             //provide chat info to client
             socket.emit('chatInfo', {
