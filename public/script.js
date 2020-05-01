@@ -47,8 +47,8 @@ socket.on('remove-typing', () => {
     typing.classList.remove('show');
 });   
 
-socket.on('show-offline', () => {
-    status.textContent = 'Offline';
+socket.on('show-offline', lastSeen => {
+    status.textContent = `last seen: ${lastSeen}`;
 });
 
 //Sent message

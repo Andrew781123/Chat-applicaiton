@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -20,7 +21,23 @@ const userSchema = new mongoose.Schema({
 
     role: {
         type: String,
-    } 
+    },
+    
+    lastSeen: {
+        type: Date
+    }
+});
+
+userSchema.virtual('formatedLastSeen').get(function() {
+    if(this.lastSeen) {
+        let displayTime = this.lastSeen;
+        if (moment(this.lastSeen).utcOffset() == -0){
+            // for server
+            displayTime = moment(this.lastSeen).add(8, 'h')
+        }
+        
+        return moment(displayTime).format('MMM D, HH:mm');
+    }
 });
 
 const User = mongoose.model('user', userSchema);

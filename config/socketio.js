@@ -20,8 +20,7 @@ function configSocketio(server) {
             let room;
             try {
                 currentUser = await User.findById(currentUserId).select('username').exec();
-                user = await User.findById(userId).select('username').exec();
-
+                user = await User.findById(userId).select('username lastSeen').exec();
                 //check if room exists
                 room = await chatRoom.findOne({
                     users: {$all: [currentUserId, userId]}
@@ -45,7 +44,7 @@ function configSocketio(server) {
             if(chatmate != null) {
                 socket.emit('show-online');
             } else {
-                socket.emit('show-offline');
+                socket.emit('show-offline', user.formatedLastSeen);
             }
 
             //show online status to all rooms of the new user
@@ -120,9 +119,12 @@ function configSocketio(server) {
             const currentUser = getUser(socket.id);
             removeUser(socket.id);
             try {
-                const rooms = await chatRoom.find({ users: {$in: [currentUser.id]}}).select('_id');
+                const rooms = await chatRoom.find({ users: {$in: [currentUser.id]}}).
+                select('_id');
+                const lastSeen = new Date();
+                const userToUpdate = await User.findOneAndUpdate({_id: currentUser.id}, {lastSeen: lastSeen}, {new: true});
                 rooms.forEach(room => {
-                    socket.broadcast.to(room._id).emit('show-offline');
+                    socket.broadcast.to(room._id).emit('show-offline', userToUpdate.formatedLastSeen);
                 });
             } catch(err) {
                 console.error(err);
@@ -139,7 +141,7 @@ function getIdsFromUrl(url) {
     const secondSlash = url.indexOf('/', firstSlash+1);
     
     ids.userId = url.slice(firstSlash+1, secondSlash);
-    ids.currentUserId = url.slice(secondSlash+1)
+    ids.currentUserId = url.slice(secondSlash+1);
     return ids;
 }
 
