@@ -30,10 +30,11 @@ const userSchema = new mongoose.Schema({
 
 userSchema.virtual('formatedLastSeen').get(function() {
     if(this.lastSeen) {
-        const currentTime = new Date();
+        let currentTime = new Date();
         let displayTime = this.lastSeen;
-        if (moment(this.lastSeen).utcOffset() == -0){
+        if (moment(this.lastSeen).utcOffset() == -0  && moment(this.currentTime).utcOffset() == -0){
             // for server
+            currentTime = moment(this.currentTime).add(8, 'h')
             displayTime = moment(this.lastSeen).add(8, 'h')
         }
         const formatedCurrentTime = moment(currentTime).format('MMM D');
