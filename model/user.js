@@ -30,15 +30,19 @@ const userSchema = new mongoose.Schema({
 
 userSchema.virtual('formatedLastSeen').get(function() {
     if(this.lastSeen) {
+        //for comparason
         let currentTime = new Date();
         let displayTime = this.lastSeen;
+        
         if (moment(this.lastSeen).utcOffset() == -0  && moment(this.currentTime).utcOffset() == -0){
             // for server
             currentTime = moment(this.currentTime).add(8, 'h')
             displayTime = moment(this.lastSeen).add(8, 'h')
         }
+        
         const formatedCurrentTime = moment(currentTime).format('MMM D');
         let formatedLastSeen = moment(displayTime).format('MMM D');
+        //check if date is today
         if(formatedCurrentTime === formatedLastSeen) {
             return `today, ${moment(displayTime).format('HH:mm')}`
         } else {

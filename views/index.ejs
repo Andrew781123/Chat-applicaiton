@@ -1,18 +1,54 @@
 <div class="jumbotron">
     <div class="container">
         <% if(typeof loggedInUser == 'undefined'){ %> 
-            <h1 class="display-4">Chat-application version 1</h1>
+            <h1 class="display-4">Chat-application version 2</h1>
         <% } else { %> 
             <h1 class="display-4 info">Welcome <%= loggedInUser.username %>!</h1>
         <% } %> 
-        <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit tempore veniam eius sapiente eaque blanditiis rerum nesciunt. Similique, delectus consectetur.</p>
-        <hr class="my-4">
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut assumenda expedita iusto quas quo consequuntur nostrum pariatur ad rerum incidunt.</p>
         <% if(typeof loggedInUser == 'undefined'){ %>   
-            <a href="/auth/login" class="btn btn-outline-danger my-2 my-sm-0" type="submit">Login</a>
+            <a href="/auth/login" class="btn btn-outline-danger my-2 my-sm-0 mt-3" type="submit">Login</a>
         <% } else { %> 
-            <a href="/users" class="btn btn-outline-info my-2 my-sm-0" type="submit">Chat!</a>
+            <a href="/users" class="btn btn-outline-info my-2 my-sm-0 mt-3" type="submit">Chat!</a>
         <% } %> 
+        <hr class="my-4">
+        <div class="mt-2" id="subtitle">
+            <h3>What's new</h3>
+            <ul id="new-features">
+                <li class="feature">Status and Lastseen</li>
+                <li class="feature">Database models improvements</li>
+                <li class="feature">UI improvements</li>
+            </ul>
+        </div>
+        <div>
+            <h3>Tech Used</h3>
+            <ul>
+                <li>
+                    <h4>FrontEnd</h4>
+                    <ul>
+                        <li>HTML</li>
+                        <li>CSS</li>
+                        <li>JavaScript</li>
+                    </ul>
+                </li>
+                <li>
+                    <h4>BackEnd</h4>
+                    <ul>
+                        <li>Node js</li>
+                        <li>Express + ejs</li>
+                        <li>Mongoose</li>
+                    </ul>
+                </li>
+                <li>
+                    <h4>Server and Database</h4>
+                    <ul>
+                        <li>Heroku</li>
+                        <li>MongoDB Atlas</li>
+                    </ul>
+                </li>
+                
+            </ul>
+        </div>
+        
     </div>
     
 </div>
