@@ -42,6 +42,7 @@ function configSocketio(server) {
                 socket.emit('show-offline');
             }
 
+            //show online status to all rooms of the new user
             const rooms = await chatRoom.find({ users: {$in: [newUser.id]}}).select('_id');
             rooms.forEach(room => {
                 socket.broadcast.to(room._id).emit('show-online');
