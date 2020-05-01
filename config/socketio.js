@@ -15,20 +15,26 @@ function configSocketio(server) {
         socket.on('userids', async url => {
             const { userId, currentUserId } = getIdsFromUrl(url);
 
-            
-            const currentUser = await User.findById(currentUserId).select('username').exec();
-            const user = await User.findById(userId).select('username').exec();
+            let currentUser;
+            let user;
+            let room;
+            try {
+                currentUser = await User.findById(currentUserId).select('username').exec();
+                user = await User.findById(userId).select('username').exec();
 
-            
-
-            //check if room exists
-            let room = await chatRoom.findOne({
-                users: {$all: [currentUserId, userId]}
-            });
-            if(room == null) {
-                room = await createNewRoom(roomName = '', currentUserId, userId);
+                //check if room exists
+                room = await chatRoom.findOne({
+                    users: {$all: [currentUserId, userId]}
+                });
+                
+                if(room == null) {
+                    room = await createNewRoom(roomName = '', currentUserId, userId);
+                }
+                
+            } catch(err) {
+                console.log(err);
             }
-            
+
             const newUser = addUser(socket.id, currentUserId, currentUser.username, room); 
 
             //join room
@@ -43,11 +49,15 @@ function configSocketio(server) {
             }
 
             //show online status to all rooms of the new user
-            const rooms = await chatRoom.find({ users: {$in: [newUser.id]}}).select('_id');
-            rooms.forEach(room => {
-                socket.broadcast.to(room._id).emit('show-online');
-            });
-            
+            try {
+                const rooms = await chatRoom.find({ users: {$in: [newUser.id]}}).select('_id');
+                rooms.forEach(room => {
+                    socket.broadcast.to(room._id).emit('show-online');
+                });
+            } catch(err) {
+                console.error(err);
+            }
+           
             //provide chat info to client
             socket.emit('chatInfo', {
                 sender: newUser.username,
@@ -56,17 +66,20 @@ function configSocketio(server) {
             });
 
             //get chat history from database
-            const chatHistories = await ChatMessage.find({room: newUser.room._id}).populate('userSend').exec();
-            //loop through only if there is chat history
-            if(chatHistories.length > 0 && chatHistories != null) {
-                chatHistories.forEach(chatHistory => {
-                    if(chatHistory.userSend._id == newUser.id) {
-                        chatHistory.userSend.username = 'me'
-                    } 
-                });
-                socket.emit('chatHistory', chatHistories);
-            } 
-            
+            try {
+                const chatHistories = await ChatMessage.find({room: newUser.room._id}).populate('userSend').exec();
+                //loop through only if there is chat history
+                if(chatHistories.length > 0 && chatHistories != null) {
+                    chatHistories.forEach(chatHistory => {
+                        if(chatHistory.userSend._id == newUser.id) {
+                            chatHistory.userSend.username = 'me'
+                        } 
+                    });
+                    socket.emit('chatHistory', chatHistories);
+                } 
+            } catch(err) {
+                console.error(err);
+            }
         });
 
         //listen for message sent
@@ -97,7 +110,7 @@ function configSocketio(server) {
             socket.broadcast.to(currentUser.room._id).emit('show-typing', senderName);
         });
 
-        socket.on('remove-typing', room => {
+        socket.on('remove-typing', () => {
             const currentUser = getUser(socket.id);
             socket.broadcast.to(currentUser.room._id).emit('remove-typing');
         });
@@ -106,10 +119,14 @@ function configSocketio(server) {
         socket.on('disconnect', async () => {
             const currentUser = getUser(socket.id);
             removeUser(socket.id);
-            const rooms = await chatRoom.find({ users: {$in: [currentUser.id]}}).select('_id');
-            rooms.forEach(room => {
-                socket.broadcast.to(room._id).emit('show-offline');
-            });
+            try {
+                const rooms = await chatRoom.find({ users: {$in: [currentUser.id]}}).select('_id');
+                rooms.forEach(room => {
+                    socket.broadcast.to(room._id).emit('show-offline');
+                });
+            } catch(err) {
+                console.error(err);
+            }
         });
     });
 }
@@ -139,7 +156,6 @@ async function createNewRoom(roomName = '', currentUserId, userId) {
             return savedRoom;
             
         } catch(err) {
-            console.log('err here');
             return console.error(err);
         }
         

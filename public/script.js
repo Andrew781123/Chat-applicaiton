@@ -23,7 +23,6 @@ socket.on('chatInfo', user => {
     senderName = user.sender;
     receiverId = user.receiverId,
     receiverName = user.receiver,
-    // console.log(`sender: ${typeof senderId}, receiver: ${receiverId}`);
     document.querySelector('#user').textContent = receiverName;
 });
 
@@ -76,7 +75,6 @@ chatForm.addEventListener('submit', e => {
 
 //typing
 document.querySelector('#message').addEventListener('input', () => {
-    console.log(`username: ${senderName}`);
     socket.emit('typing', senderName);
 });
 

@@ -1,3 +1,4 @@
+console.log('new user array');
 let users = [];
 
 function addUser(socketId, id, username, room) {
