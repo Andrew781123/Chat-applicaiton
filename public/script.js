@@ -9,24 +9,20 @@ const username = document.querySelector('#username');
 const typing = document.querySelector('#typing');
 const status = document.querySelector('#status');
 
-let senderId;
 let receiverId;
 let senderName;
-let room;
 
 
 socket.emit('userids', location.pathname);
 
-// socket.on('show-online', () => {
-//     status.classList.add('show');
-// });
+socket.on('show-online', () => {
+    status.textContent = 'Online'
+});
 
 socket.on('chatInfo', user => {
-    senderId = user.sender._id;
-    senderName = user.sender.username;
+    senderName = user.sender;
     receiverId = user.receiverId,
     receiverName = user.receiver,
-    room = user.room;
     // console.log(`sender: ${typeof senderId}, receiver: ${receiverId}`);
     document.querySelector('#user').textContent = receiverName;
 });
@@ -61,20 +57,16 @@ chatForm.addEventListener('submit', e => {
     
     e.preventDefault();
     //no typing
-    socket.emit('remove-typing', room);
+    socket.emit('remove-typing');
     
     //Get message input form form
     const messageInput = e.target.elements.message.value;
 
     const sentMessage = {
         message: messageInput,
-        senderId: senderId,
-        senderName: senderName,
         receiverId: receiverId,
-        room: room
     };
 
-    console.log(`room is : ${room}`);
     
     socket.emit('sentMessage', sentMessage);
     //clear message
@@ -84,10 +76,8 @@ chatForm.addEventListener('submit', e => {
 
 //typing
 document.querySelector('#message').addEventListener('input', () => {
-    socket.emit('typing', {
-        senderName: senderName,
-        room: room
-    });
+    console.log(`username: ${senderName}`);
+    socket.emit('typing', senderName);
 });
 
 socket.on('show-typing', senderName => {

@@ -3,56 +3,59 @@ const url = require('url');
 const ChatMessage = require('../model/chat-message');
 const User = require('../model/user');
 const chatRoom = require('../model/room');
-
+const { addUser, getUser, getUserByUsername, removeUser } = require('../utils/users');
 
 function configSocketio(server) {
     const io = socketio(server);
 
     io.on('connection', socket => {
-        let userId;
-        let currentUserId;
-        let room;
-
         console.log('new connection');
-        //request id from url
         
          //response url from client
         socket.on('userids', async url => {
-            const ids = getIdsFromUrl(url);
-            userId = ids.userId;
-            currentUserId = ids.currentUserId;
+            const { userId, currentUserId } = getIdsFromUrl(url);
 
+            
             const currentUser = await User.findById(currentUserId).select('username').exec();
             const user = await User.findById(userId).select('username').exec();
 
+            
+
             //check if room exists
-            room = await chatRoom.findOne({
+            let room = await chatRoom.findOne({
                 users: {$all: [currentUserId, userId]}
             });
             if(room == null) {
                 room = await createNewRoom(roomName = '', currentUserId, userId);
             }
-
+            
+            const newUser = addUser(socket.id, currentUserId, currentUser.username, room); 
 
             //join room
-            socket.join(room._id);
+            socket.join(newUser.room._id);
 
-            // socket.broadcast.to(room._id).emit('show-online');
-            
+            //check if chatmate is online
+            const chatmate = getUserByUsername(user.username);
+            if(chatmate != null) {
+                socket.emit('show-online');
+            } else {
+                socket.emit('show-offline');
+            }
+
+            socket.broadcast.to(newUser.room._id).emit('show-online');
             //provide chat info to client
             socket.emit('chatInfo', {
-                sender: currentUser,
+                sender: newUser.username,
                 receiver: user.username,
                 receiverId: userId,
-                room: room
             });
 
             //get chat history from database
-            const chatHistories = await ChatMessage.find({room: room._id}).populate('userSend').exec();
+            const chatHistories = await ChatMessage.find({room: newUser.room._id}).populate('userSend').exec();
             //loop through only if there is chat history
             if(chatHistories.length > 0 && chatHistories != null) {
                 chatHistories.forEach(chatHistory => {
-                    if(chatHistory.userSend._id == currentUserId) {
+                    if(chatHistory.userSend._id == newUser.id) {
                         chatHistory.userSend.username = 'me'
                     } 
                 });
@@ -63,7 +66,8 @@ function configSocketio(server) {
 
         //listen for message sent
         socket.on('sentMessage', async (sentMessage) => {
-            const newMessage = await saveMessage(sentMessage);
+            const currentUser = getUser(socket.id);
+            const newMessage = await saveMessage(currentUser, sentMessage);
             //get virtual
             const formatedtime = newMessage.formatedtime
             //set username.userSend to 'me' if he is the sender
@@ -78,22 +82,27 @@ function configSocketio(server) {
             //emit to sender
             socket.emit('myMessage', myMessage);
             //emit to clients in room
-            socket.broadcast.to(sentMessage.room._id).emit('sentMessage', newMessage);
+            socket.broadcast.to(currentUser.room._id).emit('sentMessage', newMessage);
         });
 
         //typing
-        socket.on('typing', ({ senderName, room }) => {
-            socket.broadcast.to(room._id).emit('show-typing', senderName);
+        socket.on('typing', senderName => {
+            const currentUser = getUser(socket.id);
+
+            socket.broadcast.to(currentUser.room._id).emit('show-typing', senderName);
         });
 
         socket.on('remove-typing', room => {
-            socket.broadcast.to(room._id).emit('remove-typing');
+            const currentUser = getUser(socket.id);
+            socket.broadcast.to(currentUser.room._id).emit('remove-typing');
         });
 
         //emit when client disconnects
-        // socket.on('disconnect', () => {
-        //     socket.broadcast.to(room._id).emit('show-offline');
-        // });
+        socket.on('disconnect', () => {
+            const currentUser = getUser(socket.id);
+            removeUser(socket.id);
+            socket.broadcast.to(currentUser.room._id).emit('show-offline');
+        });
     });
 }
 
@@ -131,11 +140,11 @@ async function createNewRoom(roomName = '', currentUserId, userId) {
     }
 }
 
-async function saveMessage(message) {
+async function saveMessage(currentUser, message) {
     const message2 = await ChatMessage.create({
-        userSend: message.senderId,
+        userSend: currentUser.id,
         userReceive: message.receiverId,
-        room: message.room._id,
+        room: currentUser.room._id,
         message: message.message
     });
     const savedMessage = await ChatMessage.populate(message2, {path: 'userSend'});

@@ -27,7 +27,7 @@ body {
     margin-left: 10px;
     font-size: .8em;
     color: rgb(54, 54, 54);
-    display: none;
+    display: inline-block;
 }
 
 #status.show {
