@@ -42,7 +42,11 @@ function configSocketio(server) {
                 socket.emit('show-offline');
             }
 
-            socket.broadcast.to(newUser.room._id).emit('show-online');
+            const rooms = await chatRoom.find({ users: {$in: [newUser.id]}}).select('_id');
+            rooms.forEach(room => {
+                socket.broadcast.to(room._id).emit('show-online');
+            });
+            
             //provide chat info to client
             socket.emit('chatInfo', {
                 sender: newUser.username,
@@ -98,10 +102,13 @@ function configSocketio(server) {
         });
 
         //emit when client disconnects
-        socket.on('disconnect', () => {
+        socket.on('disconnect', async () => {
             const currentUser = getUser(socket.id);
             removeUser(socket.id);
-            socket.broadcast.to(currentUser.room._id).emit('show-offline');
+            const rooms = await chatRoom.find({ users: {$in: [currentUser.id]}}).select('_id');
+            rooms.forEach(room => {
+                socket.broadcast.to(room._id).emit('show-offline');
+            });
         });
     });
 }
