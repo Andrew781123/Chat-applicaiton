@@ -48,7 +48,8 @@ socket.on('remove-typing', () => {
 });   
 
 socket.on('show-offline', lastSeen => {
-    status.textContent = `last seen: ${lastSeen}`;
+    if(lastSeen == null) status.textContent = `last seen: never online before`;
+    else status.textContent = `last seen: ${lastSeen}`;
 });
 
 //Sent message
