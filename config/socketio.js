@@ -1,9 +1,10 @@
 const socketio = require('socket.io');
 const url = require('url');
+const mongoose = require('mongoose');
 const ChatMessage = require('../model/chat-message');
 const User = require('../model/user');
 const chatRoom = require('../model/room');
-const { addUser, getUser, getUserByUsername, removeUser } = require('../utils/users');
+const { addUser, getUser, getOtherUserIdsById, getUserByUsername, removeUser } = require('../utils/users');
 
 function configSocketio(server) {
     const io = socketio(server);
@@ -47,15 +48,24 @@ function configSocketio(server) {
                 socket.emit('show-offline', user.formatedLastSeen);
             }
 
-            //show online status to all rooms of the new user
-            try {
-                const rooms = await chatRoom.find({ users: {$in: [newUser.id]}}).select('_id');
-                rooms.forEach(room => {
-                    socket.broadcast.to(room._id).emit('show-online');
-                });
-            } catch(err) {
-                console.error(err);
+            //show online status to all ONLINE rooms of the new user
+            const onlineUserIds = getOtherUserIdsById(newUser.id);
+            if(onlineUserIds.length > 0) {
+                try {
+                    const rooms = await chatRoom.find(
+                        {$and: [
+                            {users: {$elemMatch: {$eq: newUser.id}}}, 
+                            {users: {$in: onlineUserIds}}
+                        ]}
+                    ).select('_id').exec();
+                    rooms.forEach(room => {
+                        socket.broadcast.to(room._id).emit('show-online');
+                    });
+                } catch(err) {
+                    console.error(err);
+                }
             }
+            
            
             //provide chat info to client
             socket.emit('chatInfo', {

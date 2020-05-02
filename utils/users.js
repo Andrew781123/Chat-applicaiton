@@ -11,6 +11,11 @@ function getUser(socketId) {
     return users.find(user => user.socketId === socketId);
 }
 
+function getOtherUserIdsById(id) {
+    const foundUsers = users.filter(user => user.id !== id);
+    return foundUsers.map(foundUser => foundUser.id);
+}
+
 function getUserByUsername(username) {
     return users.find(user => user.username === username);
 }
@@ -23,6 +28,7 @@ function removeUser(socketId) {
 module.exports = {
     addUser,
     getUser,
+    getOtherUserIdsById,
     getUserByUsername,
     removeUser
 };
