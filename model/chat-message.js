@@ -28,6 +28,11 @@ const chatMessageSchema = new mongoose.Schema({
     time: {
         type: Date,
         default: () => new Date()
+    },
+
+    isRead: {
+        type: Boolean,
+        required: true
     }
 }, {toObject: {virtuals: true}, toJSON: {virtuals: true}});
 

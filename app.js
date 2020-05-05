@@ -13,10 +13,14 @@ const methodOverride = require('method-override')
 
 const http = require('http');
 const server = http.createServer(app);
+const socketio = require('socket.io');
 
-const socketioConfig = require('./config/socketio');
 
-socketioConfig(server);
+const io = socketio(server);
+
+const { configChatSocket } = require('./chat-socket');
+configChatSocket(io);
+const { index } = require('./index')(io);
 
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DATABASE_URI, {
@@ -66,3 +70,4 @@ app.get('/', (req, res) => {
 
 
 server.listen(process.env.PORT || 3000, () => console.log(`server running`));
+

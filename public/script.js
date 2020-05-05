@@ -1,4 +1,5 @@
-const socket = io();
+// const socket = io();
+const socket = io('/users/:id/:id');
 const { userid } = Qs.parse(location.search, {
     ignoreQueryPrefix: true
 });
@@ -82,6 +83,10 @@ document.querySelector('#message').addEventListener('input', () => {
 socket.on('show-typing', senderName => {
     typing.textContent = `${senderName} is typing`;
     typing.classList.add('show');
+});
+
+socket.on('new message', message => {
+    console.log(message);
 });
 
 function outputMessage(sentMessage) {
